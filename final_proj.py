@@ -190,20 +190,33 @@ def chow_liu(observations):
         be in the set; also, for grading purposes, please present the edges
         so that for an edge (i, j) in this set, i < j
     """
-#    print("printing observations")
-#    print(observations)
-#    print("end observations")
     best_tree = set()  # we will add in edges to this set
     num_obs, num_vars = observations.shape
     
-#    print("num_obs = " + str(num_obs))
-#    print("num_vars = " + str(num_vars))
     union_find = UnionFind(range(num_vars))
 
     # -------------------------------------------------------------------------
     # YOUR CODE HERE
     #
 
+    variables = []
+    for i in range(num_vars):
+        variables.append([0]*num_obs)
+        for j in range(num_obs):
+            variables[i][j] = observations[j][i]
+       
+    edges = []
+    for i in range(len(variables)-1):
+        for j in range(i+1, len(variables)):
+            edges.append((i, j, compute_empirical_mutual_info_nats(variables[i], variables[j])))
+            
+    sorted_by_inf = sorted(edges, key=lambda tup: tup[2], reverse=True)
+    for edge in sorted_by_inf:
+        i = edge[0]
+        j = edge[1]
+        if union_find.find(i) != union_find.find(j):
+            best_tree.add((i, j))
+            union_find.union(i, j)
     #
     # END OF YOUR CODE
     # -------------------------------------------------------------------------
