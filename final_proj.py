@@ -114,6 +114,15 @@ def compute_empirical_distribution(values):
     # YOUR CODE HERE
     #
 
+    for value in values:
+        if value in distribution:
+            distribution[value] += 1
+        else:
+            distribution[value] = 1
+            
+    for value in distribution:
+        distribution[value] /= len(values)
+
     #
     # END OF YOUR CODE
     # -------------------------------------------------------------------------
@@ -143,6 +152,15 @@ def compute_empirical_mutual_info_nats(var1_values, var2_values):
     #
 
     empirical_mutual_info_nats = 0.0
+    p1 = compute_empirical_distribution(var1_values)
+    p2 = compute_empirical_distribution(var2_values)
+    vals = []
+    for i in range(len(var1_values)):
+        vals.append((var1_values[i], var2_values[i]))
+    p12 = compute_empirical_distribution(vals)
+    
+    for val in vals:
+        empirical_mutual_info_nats += p12[val]*np.log(p12[val]/(p1[val[0]] * p2[val[1]]))
 
     #
     # END OF YOUR CODE
@@ -172,8 +190,14 @@ def chow_liu(observations):
         be in the set; also, for grading purposes, please present the edges
         so that for an edge (i, j) in this set, i < j
     """
+#    print("printing observations")
+#    print(observations)
+#    print("end observations")
     best_tree = set()  # we will add in edges to this set
     num_obs, num_vars = observations.shape
+    
+#    print("num_obs = " + str(num_obs))
+#    print("num_vars = " + str(num_vars))
     union_find = UnionFind(range(num_vars))
 
     # -------------------------------------------------------------------------
