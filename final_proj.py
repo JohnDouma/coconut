@@ -110,10 +110,6 @@ def compute_empirical_distribution(values):
     """
     distribution = {}
 
-    # -------------------------------------------------------------------------
-    # YOUR CODE HERE
-    #
-
     for value in values:
         if value in distribution:
             distribution[value] += 1
@@ -122,10 +118,6 @@ def compute_empirical_distribution(values):
             
     for value in distribution:
         distribution[value] /= len(values)
-
-    #
-    # END OF YOUR CODE
-    # -------------------------------------------------------------------------
 
     return distribution
 
@@ -147,10 +139,6 @@ def compute_empirical_mutual_info_nats(var1_values, var2_values):
     The empirical mutual information *in nats* (not bits)
     """
 
-    # -------------------------------------------------------------------------
-    # YOUR CODE HERE
-    #
-
     empirical_mutual_info_nats = 0.0
     p1 = compute_empirical_distribution(var1_values)
     p2 = compute_empirical_distribution(var2_values)
@@ -161,10 +149,6 @@ def compute_empirical_mutual_info_nats(var1_values, var2_values):
     
     for val in vals:
         empirical_mutual_info_nats += p12[val]*np.log(p12[val]/(p1[val[0]] * p2[val[1]]))
-
-    #
-    # END OF YOUR CODE
-    # -------------------------------------------------------------------------
 
     return empirical_mutual_info_nats
 
@@ -195,10 +179,6 @@ def chow_liu(observations):
     
     union_find = UnionFind(range(num_vars))
 
-    # -------------------------------------------------------------------------
-    # YOUR CODE HERE
-    #
-
     variables = []
     for i in range(num_vars):
         variables.append([0]*num_obs)
@@ -217,9 +197,6 @@ def chow_liu(observations):
         if union_find.find(i) != union_find.find(j):
             best_tree.add((i, j))
             union_find.union(i, j)
-    #
-    # END OF YOUR CODE
-    # -------------------------------------------------------------------------
 
     return best_tree
 
