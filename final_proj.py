@@ -222,13 +222,15 @@ def compute_empirical_conditional_distribution(var1_values, var2_values):
     """
     conditional_distributions = {x2: {} for x2 in set(var2_values)}
 
-    # -------------------------------------------------------------------------
-    # YOUR CODE HERE
-    #
-
-    #
-    # END OF YOUR CODE
-    # -------------------------------------------------------------------------
+    p2 = compute_empirical_distribution(var2_values)
+    vals = []
+    for i in range(len(var1_values)):
+        vals.append((var1_values[i], var2_values[i]))
+    p12 = compute_empirical_distribution(vals)
+    for x2 in conditional_distributions:
+        for x1 in var1_values:
+            if (x1, x2) in p12:
+                conditional_distributions[x2][x1] = p12[(x1, x2)] /  p2[x2]
 
     return conditional_distributions
 
@@ -309,13 +311,20 @@ def learn_tree_parameters(observations, tree, root_node=0):
                         dicts_within_dict_table[x2][x1]
         return transposed_table
 
-    # -------------------------------------------------------------------------
-    # YOUR CODE HERE
-    #
-
-    #
-    # END OF YOUR CODE
-    # -------------------------------------------------------------------------
+    for node in nodes:
+        node_potentials[node] = compute_empirical_distribution(observations[:,node])
+        
+    fringe = [root_node]
+    visited = {node: False for node in nodes}
+    while len(fringe) > 0:
+        node = fringe.pop(0)
+        visited[node] = True
+        for neighbor in edges[node]:
+            if not visited[neighbor]:
+                edge_potentials[(neighbor, node)] = compute_empirical_conditional_distribution(observations[:,neighbor], observations[:, node])
+                fringe.append(neighbor)
+                
+    edge_potentials.update(transpose_2d_table(edge_potentials))
 
     return node_potentials, edge_potentials
 
