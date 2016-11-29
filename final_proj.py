@@ -512,12 +512,13 @@ def compute_marginals_given_observations(nodes, edges, node_potentials,
     marginals, given the observations (see documentation for the output of
     sum_product())
     """
-    new_node_potentials = {}
+    new_node_potentials = node_potentials
 
     # -------------------------------------------------------------------------
     # YOUR CODE HERE
     #
-
+    for node in observations:
+        new_node_potentials[node] = {observations[node]:1}
     #
     # END OF YOUR CODE
     # -------------------------------------------------------------------------
