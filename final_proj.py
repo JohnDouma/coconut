@@ -147,7 +147,7 @@ def compute_empirical_mutual_info_nats(var1_values, var2_values):
         vals.append((var1_values[i], var2_values[i]))
     p12 = compute_empirical_distribution(vals)
     
-    for val in vals:
+    for val in p12:
         empirical_mutual_info_nats += p12[val]*np.log(p12[val]/(p1[val[0]] * p2[val[1]]))
 
     return empirical_mutual_info_nats
