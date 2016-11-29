@@ -369,14 +369,52 @@ def sum_product(nodes, edges, node_potentials, edge_potentials):
     """
     marginals = {}
     messages = {}
-
-    # -------------------------------------------------------------------------
-    # YOUR CODE HERE
-    #
-
-    #
-    # END OF YOUR CODE
-    # -------------------------------------------------------------------------
+    
+    def message(i, j):
+        """
+        compute mi->j as a dictionary
+        Inputs:
+          i, j - source and destination nodes, respectively
+        Precondition:
+          j in edges[i]
+          
+        Output:
+          mi->j as a dictionary whose keys are the values taken on by node j
+        """
+        
+        if (i, j) in messages:
+            return messages[(i, j)]
+            
+        mess = {}
+        phi = node_potentials[i]
+        psi = edge_potentials[(i, j)]
+        args = node_potentials[j]
+        neighbors = edges[i]
+        for y in args:
+          value = 0
+          for x in phi:
+            temp = phi[x]*psi[x][y]
+            for node in neighbors:
+              if node != j:
+                temp *= message(node, i)[x]
+            value += temp
+          mess[y] = value
+          
+        messages[(i, j)] = mess
+        
+        return mess
+        
+    for node in nodes:
+        marginal = {}
+        for x in node_potentials[node]:
+            value = node_potentials[node][x]
+            for neighbor in edges[node]:
+                value *= message(neighbor, node)[x]
+            marginal[x] = value
+        total = sum(marginal.values())
+        for x in marginal:
+            marginal[x] /= total
+        marginals[node] = marginal
 
     return marginals
 
