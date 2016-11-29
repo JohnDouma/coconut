@@ -313,6 +313,9 @@ def learn_tree_parameters(observations, tree, root_node=0):
 
     for node in nodes:
         node_potentials[node] = compute_empirical_distribution(observations[:,node])
+        if node != root_node:
+            for key in node_potentials[node]:
+                node_potentials[node][key] = 1
         
     fringe = [root_node]
     visited = {node: False for node in nodes}
@@ -322,10 +325,15 @@ def learn_tree_parameters(observations, tree, root_node=0):
         for neighbor in edges[node]:
             if not visited[neighbor]:
                 dictionary = compute_empirical_conditional_distribution(observations[:,neighbor], observations[:, node])
-                edge_potentials[(neighbor, node)] = dictionary
-                edge_potentials[(node, neighbor)] = transpose_2d_table(dictionary)
+                edge_potentials[(node, neighbor)] = dictionary
                 fringe.append(neighbor)
-                
+
+    new_edge_potentials = {}
+    for edge in edge_potentials:
+        new_edge_potentials[(edge[1], edge[0])] = transpose_2d_table(edge_potentials[edge])
+        
+    edge_potentials.update(new_edge_potentials)
+        
     return node_potentials, edge_potentials
 
 
